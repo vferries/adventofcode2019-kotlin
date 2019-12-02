@@ -1,5 +1,7 @@
 package advent
 
+import java.io.File
+
 class Day1 {
     fun fuelRequired(mass: Int): Int {
         return (mass/3) - 2
@@ -16,12 +18,9 @@ class Day1 {
     }
 }
 
-fun main1() {
-}
-
 fun main() {
     val day1 = Day1()
-    val lines = object {}.javaClass.getResource("/day1.txt").readText().split("\n").map(String::toInt)
+    val lines = File("src/main/resources/day1.txt").readLines().map(String::toInt)
     println("PART 1")
     val sum1 = lines.map(day1::fuelRequired).sum()
     println(sum1)
