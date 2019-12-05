@@ -3,16 +3,9 @@ package advent
 import java.io.File
 
 class Day2 {
-    fun processCode(list: MutableList<Int>): MutableList<Int> {
-        var currentIndex = 0
-        while (list[currentIndex] != 99) {
-            when (list[currentIndex]) {
-                1 -> list[list[currentIndex + 3]] = list[list[currentIndex + 1]] + list[list[currentIndex + 2]]
-                2 -> list[list[currentIndex + 3]] = list[list[currentIndex + 1]] * list[list[currentIndex + 2]]
-            }
-            currentIndex += 4
-        }
-        return list
+    fun processCode(list: MutableList<Int>): List<Int> {
+        val interpreter = IntCode()
+        return interpreter.compute(list)
     }
 
 
