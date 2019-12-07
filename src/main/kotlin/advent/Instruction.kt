@@ -35,10 +35,11 @@ class HaltInstruction : Instruction(1) {
     override fun process(index: Int, list: MutableList<Int>): Int = index + length
 }
 
-class InputInstruction(val destination: Int, val input: Int, modes: List<Int>) : Instruction(2) {
+class InputInstruction(val destination: Int, val input: MutableList<Int>, modes: List<Int>) : Instruction(2) {
     override fun process(index: Int, list: MutableList<Int>): Int {
         println("Input index")
-        list[destination] = input
+        list[destination] = input.first()
+        input.removeAt(0)
         return index + length
     }
 }

@@ -4,8 +4,8 @@ import java.io.File
 
 class Day2 {
     fun processCode(list: MutableList<Int>): List<Int> {
-        val interpreter = IntCode()
-        interpreter.compute(list)
+        val interpreter = IntCode(list)
+        interpreter.compute()
         return list
     }
 
