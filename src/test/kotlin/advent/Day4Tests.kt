@@ -33,6 +33,6 @@ class Day4Tests {
 
     @Test
     fun `Part 2 - Matching sample 2`() {
-        assertFalse(day4.meetCriteria2(111122))
+        assertTrue(day4.meetCriteria2(111122))
     }
 }

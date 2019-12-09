@@ -1,6 +1,7 @@
 package advent
 
 import java.io.File
+import java.math.BigInteger
 
 fun main() {
     val combinations = permute((0..5).toList())
@@ -8,29 +9,29 @@ fun main() {
 //    println(combinations.map { calculateThrusterSignal(program, it) }.max())
 
     val combinations2 = permute((5..10).toList())
-    val max = combinations2.map { calculateThrusterSignal(program, it) }.max()
+    val max = combinations2.map { calculateThrusterSignal(program, it.map(Int::toBigInteger)) }.max()
     println("Max is $max")
 
 }
 
-fun calculateThrusterSignal(program: List<Int>, phaseSetting: List<Int>): Int {
+fun calculateThrusterSignal(program: List<Int>, phaseSetting: List<BigInteger>): BigInteger {
     try {
-        val EtoA = mutableListOf<Int>()
+        val EtoA = mutableListOf<BigInteger>()
         EtoA.add(phaseSetting[0])
-        EtoA.add(0)
-        val AtoB = mutableListOf<Int>()
+        EtoA.add(BigInteger.ZERO)
+        val AtoB = mutableListOf<BigInteger>()
         AtoB.add(phaseSetting[1])
-        val BtoC = mutableListOf<Int>()
+        val BtoC = mutableListOf<BigInteger>()
         BtoC.add(phaseSetting[2])
-        val CtoD = mutableListOf<Int>()
+        val CtoD = mutableListOf<BigInteger>()
         CtoD.add(phaseSetting[3])
-        val DtoE = mutableListOf<Int>()
+        val DtoE = mutableListOf<BigInteger>()
         DtoE.add(phaseSetting[4])
-        val A = IntCode(program.toMutableList(), EtoA, AtoB)
-        val B = IntCode(program.toMutableList(), AtoB, BtoC)
-        val C = IntCode(program.toMutableList(), BtoC, CtoD)
-        val D = IntCode(program.toMutableList(), CtoD, DtoE)
-        val E = IntCode(program.toMutableList(), DtoE, EtoA)
+        val A = IntCode(program.map(Int::toBigInteger).toMutableList(), EtoA, AtoB)
+        val B = IntCode(program.map(Int::toBigInteger).toMutableList(), AtoB, BtoC)
+        val C = IntCode(program.map(Int::toBigInteger).toMutableList(), BtoC, CtoD)
+        val D = IntCode(program.map(Int::toBigInteger).toMutableList(), CtoD, DtoE)
+        val E = IntCode(program.map(Int::toBigInteger).toMutableList(), DtoE, EtoA)
 
         var loopCount = 1
         while (!E.finished) {
@@ -44,7 +45,7 @@ fun calculateThrusterSignal(program: List<Int>, phaseSetting: List<Int>): Int {
         return E.outputs.last()
     } catch (e: Exception) {
         println(e)
-        return 0
+        return BigInteger.ZERO
     }
 }
 
