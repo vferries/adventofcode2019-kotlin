@@ -2,7 +2,7 @@ package advent
 
 import java.math.BigInteger
 
-class IntCode(var program: MutableList<BigInteger>, private var inputs: MutableList<BigInteger> = mutableListOf(BigInteger.ONE), var outputs: MutableList<BigInteger> = mutableListOf()) {
+class IntCode(var program: MutableList<BigInteger>, var inputs: MutableList<BigInteger> = mutableListOf(BigInteger.ONE), var outputs: MutableList<BigInteger> = mutableListOf()) {
     var finished = false
         private set
     var currentIndex = BigInteger.ZERO
