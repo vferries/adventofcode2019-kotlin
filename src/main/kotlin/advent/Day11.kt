@@ -1,9 +1,7 @@
 package advent
 
-import java.io.File
-
-fun main(args: Array<String>) {
-    val program = File("src/main/resources/day11.txt").readText().split(",").map(String::toBigInteger)
+fun main() {
+    val program = loadFile("day11.txt").readText().split(",").map(String::toBigInteger)
     val robot = IntRobot(IntCode(program.toMutableList(), mutableListOf()), mutableMapOf())
     robot.run()
     println(robot.painting.keys.size)

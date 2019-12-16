@@ -1,9 +1,7 @@
 package advent
 
-import java.io.File
-
-fun main(args: Array<String>) {
-    val layers = File("src/main/resources/day8.txt").readText().map { it.toString().toInt() }.chunked(6*25)
+fun main() {
+    val layers = loadFile("day8.txt").readText().map { it.toString().toInt() }.chunked(6*25)
     val minLayer = layers.minBy { layer ->
         layer.count {it == 0}
     }!!

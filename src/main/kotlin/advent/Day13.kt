@@ -1,10 +1,9 @@
 package advent
 
-import java.io.File
 import java.math.BigInteger
 
 fun main() {
-    val program = File("src/main/resources/day13.txt").readText().split(",").map(String::toBigInteger)
+    val program = loadFile("day13.txt").readText().split(",").map(String::toBigInteger)
     val interpreter = IntCode(program.toMutableList(), mutableListOf())
     interpreter.compute()
     interpreter.outputs.filterIndexed { index, _ -> index % 3 == 2 }.count { it == 2.toBigInteger() }

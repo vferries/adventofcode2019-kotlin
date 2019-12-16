@@ -1,7 +1,5 @@
 package advent
 
-import java.io.File
-
 class Day2 {
     fun processCode(list: MutableList<Int>): List<Int> {
         val interpreter = IntCode(list.map(Int::toBigInteger).toMutableList())
@@ -20,7 +18,7 @@ class Day2 {
 
 fun main() {
     val day2 = Day2()
-    val numbers = File("src/main/resources/day2.txt").readText().split(",").map(String::toInt).toList()
+    val numbers = loadFile("day2.txt").readText().split(",").map(String::toInt).toList()
     val list = day2.initializeListWithCopy(numbers, 12, 2)
     val result = day2.processCode(list)
     println("PART 1")

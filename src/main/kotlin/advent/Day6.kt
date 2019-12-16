@@ -1,7 +1,5 @@
 package advent
 
-import java.io.File
-
 class Node(val label: String, var parent: Node? = null, val children: MutableList<Node> = mutableListOf())
 
 fun generateTree(input: String): List<Node> {
@@ -34,7 +32,7 @@ fun level(node: Node): Int {
 
 fun main(args: Array<String>) {
     //val sample = "COM)B\nB)C\nC)D\nD)E\nE)F\nB)G\nG)H\nD)I\nE)J\nJ)K\nK)L"
-    val sample = File("src/main/resources/day6.txt").readText()
+    val sample = loadFile("day6.txt").readText()
     val nodes = generateTree(sample)
     println(nodes.foldRight(0) { node, acc ->
         acc + level(node)

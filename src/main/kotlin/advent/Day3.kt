@@ -1,6 +1,5 @@
 package advent
 
-import java.io.File
 import kotlin.math.absoluteValue
 
 class Day3 {
@@ -64,7 +63,7 @@ class Day3 {
 
 fun main() {
     val day3 = Day3()
-    val lines = File("src/main/resources/day3.txt").readLines()
+    val lines = loadFile("day3.txt").readLines()
     println("PART 1")
     println(day3.manhattanIntersectingDistance(lines))
     println("PART 2")

@@ -1,6 +1,5 @@
 package advent
 
-import java.io.File
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -37,7 +36,7 @@ fun repeatingState(planets: List<Planet>): Int {
 }
 
 fun main() {
-    val planets = File("src/main/resources/day12.txt").readLines().map {
+    val planets = loadFile("day12.txt").readLines().map {
         val (x, y, z) = """<x=(.*), y=(.*), z=(.*)>""".toRegex().matchEntire(it)?.destructured!!
         Planet(Pos3D(x.toInt(), y.toInt(), z.toInt()))
     }

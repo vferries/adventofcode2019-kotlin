@@ -1,11 +1,10 @@
 package advent
 
-import java.io.File
 import java.math.BigInteger
 
 fun main() {
     val combinations = permute((0..5).toList())
-    val program = File("src/main/resources/day7.txt").readText().split(",").map(String::toInt)
+    val program = loadFile("day7.txt").readText().split(",").map(String::toInt)
 //    println(combinations.map { calculateThrusterSignal(program, it) }.max())
 
     val combinations2 = permute((5..10).toList())
