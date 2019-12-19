@@ -1,7 +1,5 @@
 package advent
 
-import java.util.*
-
 
 fun shortestPathToCollectKeys(map: List<String>): Int {
     val initPos = findInitPos(map)
@@ -17,6 +15,9 @@ fun shortestPathToCollectKeys(map: List<String>): Int {
         nextStates.removeAt(0)
 
         if (finishedState(mapWithoutPos, nextState.keys)) return nextState.steps
+
+
+        //TODO Calculate and only add shortest paths to new keys
         nextStates.addAll(nextMoves(mapWithoutPos, nextState))
     }
 }
