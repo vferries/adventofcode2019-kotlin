@@ -2,7 +2,7 @@ package advent
 
 import org.junit.jupiter.api.Test
 
-class Day16 {
+class Day16Tests {
     @Test
     fun `with input 12345678`() {
         val input = "12345678".map(Char::toString).map(String::toInt)

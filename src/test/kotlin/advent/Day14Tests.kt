@@ -4,21 +4,14 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class Day14Tests {
-    @Test
-    fun `Simplest calculation of ores needed`() {
-        val reactions = """9 ORE => 2 A
+    private val reaction = """9 ORE => 2 A
 8 ORE => 3 B
 7 ORE => 5 C
 3 A, 4 B => 1 AB
 5 B, 7 C => 1 BC
 4 C, 1 A => 1 CA
 2 AB, 3 BC, 4 CA => 1 FUEL""".lines().map(::parseLine).toMap()
-        assertEquals(165, calculateNeededOres(reactions))
-    }
-
-    @Test
-    fun `Second simplest calculation of ores needed`() {
-        val reactions = """157 ORE => 5 NZVS
+    private val reaction2 = """157 ORE => 5 NZVS
 165 ORE => 6 DCFZ
 44 XJWVT, 5 KHKGT, 1 QDVJ, 29 NZVS, 9 GPVTF, 48 HKGWZ => 1 FUEL
 12 HKGWZ, 1 GPVTF, 8 PSHF => 9 QDVJ
@@ -27,12 +20,7 @@ class Day14Tests {
 7 DCFZ, 7 PSHF => 2 XJWVT
 165 ORE => 2 GPVTF
 3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT""".lines().map(::parseLine).toMap()
-        assertEquals(13312, calculateNeededOres(reactions))
-    }
-
-    @Test
-    fun `Third simplest calculation of ores needed`() {
-        val reactions = """2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG
+    private val reaction3 = """2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG
 17 NVRVD, 3 JNWZP => 8 VPVL
 53 STKFG, 6 MNCFX, 46 VJHF, 81 HVMC, 68 CXFTF, 25 GNMV => 1 FUEL
 22 VJHF, 37 MNCFX => 5 FWMGM
@@ -44,12 +32,7 @@ class Day14Tests {
 1 NVRVD => 8 CXFTF
 1 VJHF, 6 MNCFX => 4 RFSQX
 176 ORE => 6 VJHF""".lines().map(::parseLine).toMap()
-        assertEquals(180697, calculateNeededOres(reactions))
-    }
-
-    @Test
-    fun `Fourth simplest calculation of ores needed`() {
-        val reactions = """171 ORE => 8 CNZTR
+private         val reaction4 = """171 ORE => 8 CNZTR
 7 ZLQW, 3 BMBT, 9 XCVML, 26 XMNCP, 1 WPTQ, 2 MZWV, 1 RJRHP => 4 PLWSL
 114 ORE => 4 BHXH
 14 VRPVC => 6 BMBT
@@ -66,9 +49,38 @@ class Day14Tests {
 121 ORE => 7 VRPVC
 7 XCVML => 6 RJRHP
 5 BHXH, 4 VRPVC => 5 LTCX""".lines().map(::parseLine).toMap()
-        assertEquals(2210736, calculateNeededOres(reactions))
+    @Test
+    fun `Simplest calculation of ores needed`() {
+        assertEquals(165, calculateNeededOres(reaction))
     }
 
+    @Test
+    fun `Second simplest calculation of ores needed`() {
+        assertEquals(13312, calculateNeededOres(reaction2))
+    }
 
+    @Test
+    fun `Second simplest calculation with 1000000000000 ores`() {
+        assertEquals(82892753L, howManyFuels(reaction2, 1000000000000L))
+    }
 
+    @Test
+    fun `Third simplest calculation of ores needed`() {
+        assertEquals(180697, calculateNeededOres(reaction3))
+    }
+
+    @Test
+    fun `Third simplest calculation with 1000000000000 ores`() {
+        assertEquals(5586022L, howManyFuels(reaction3, 1000000000000L))
+    }
+
+    @Test
+    fun `Fourth simplest calculation of ores needed`() {
+        assertEquals(2210736, calculateNeededOres(reaction4))
+    }
+
+    @Test
+    fun `Fourth simplest calculation with 1000000000000 ores`() {
+        assertEquals(460664, howManyFuels(reaction4, 1000000000000L))
+    }
 }
