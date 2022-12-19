@@ -47,20 +47,27 @@ class HaltInstruction : Instruction(1) {
 class InputInstruction(val destination: BigInteger, val input: MutableList<BigInteger>, modes: List<Int>) : InstructionWithMode(modes, 2) {
     override fun process(index: BigInteger, base: BigInteger, list: MutableMap<BigInteger, BigInteger>): Pair<BigInteger, BigInteger> {
         //println("Input index")
-        val offset = if (modes.getOrElse(0) {0} == 2) base else BigInteger.ZERO
-        list[destination + offset] = input.first()
-        input.removeAt(0)
-        val newIndex = index + length.toBigInteger()
-        return newIndex to base
+        synchronized(input) {
+            val offset = if (modes.getOrElse(0) {0} == 2) base else BigInteger.ZERO
+            if (input.isNotEmpty()) {
+                list[destination + offset] = input.removeAt(0)
+            } else {
+                list[destination + offset] = BigInteger.valueOf(-1)
+            }
+            val newIndex = index + length.toBigInteger()
+            return newIndex to base
+        }
     }
 }
 
 class OutputInstruction(private val destination: BigInteger, modes: List<Int>, private val outputs: MutableList<BigInteger>) : InstructionWithMode(modes, 2) {
     override fun process(index: BigInteger, base: BigInteger, list: MutableMap<BigInteger, BigInteger>): Pair<BigInteger, BigInteger> {
         //println("Output = $destination")
-        outputs.add(accessWithMode(0, base, destination, list))
-        val newIndex = index + length.toBigInteger()
-        return newIndex to base
+        synchronized(outputs) {
+            outputs.add(accessWithMode(0, base, destination, list))
+            val newIndex = index + length.toBigInteger()
+            return newIndex to base
+        }
     }
 }
 

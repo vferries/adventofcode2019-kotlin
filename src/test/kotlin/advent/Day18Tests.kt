@@ -48,15 +48,20 @@ class Day18Tests {
 
     @Test
     fun `Find shortest path to collect all keys 5`() {
-        val map = """#################
-#i.G..c...e..H.p#
-########.########
-#j.A..b...f..D.o#
-########@########
-#k.E..a...g..B.n#
-########.########
-#l.F..d...h..C.m#
-#################""".lines()
+        val map = """########################
+#@..............ac.GI.b#
+###d#e#f################
+###A#B#C################
+###g#h#i################
+########################""".lines()
         assertEquals(81, shortestPathToCollectKeys(map))
+    }
+    @Test
+    fun `Find shortest path to collect all keys input`() {
+        assertEquals(4204, shortestPathToCollectKeys(loadFile("day18.txt").readLines()))
+    }
+    @Test
+    fun `Find shortest quadri path to collect all keys input`() {
+        assertEquals(1682, part2(loadFile("day18.txt").readLines()))
     }
 }

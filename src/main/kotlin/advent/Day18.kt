@@ -1,60 +1,161 @@
 package advent
 
+import java.util.*
 
-fun shortestPathToCollectKeys(map: List<String>): Int {
-    val initPos = findInitPos(map)
 
-    val mapWithoutPos = map.map { line -> line.replace("@", ".") }
+fun shortestPathToCollectKeys(input: List<String>): Int {
+    val initPos = findInitPos(input)
+    val mapWithoutPos = input.map { line -> line.replace("@", ".") }
 
-    val initState = CurrentState(initPos, listOf(initPos), setOf('.'), 0)
-    val nextStates = mutableListOf<CurrentState>()
+    val map = mutableMapOf<Pos, Char>()
+    for (row in mapWithoutPos.indices) {
+        for (col in mapWithoutPos[row].indices) {
+            val value = mapWithoutPos[row][col]
+            if (value != '#') {
+                map[Pos(col, row)] = value
+            }
+        }
+    }
+
+    val initState = CurrentState(initPos, setOf(), 0)
+    val nextStates = PriorityQueue<CurrentState>(compareBy { it.steps })
     nextStates.add(initState)
-
+    val mapBestScores = mutableMapOf<CurrentState, Int>()
     while (true) {
-        val nextState = nextStates.first()
-        nextStates.removeAt(0)
-
-        if (finishedState(mapWithoutPos, nextState.keys)) return nextState.steps
-
-
-        //TODO Calculate and only add shortest paths to new keys
-        nextStates.addAll(nextMoves(mapWithoutPos, nextState))
+        val nextState = nextStates.poll()
+        //println("nextstate $nextState")
+        if (mapBestScores.containsKey(nextState) && mapBestScores.getValue(nextState) <= nextState.steps) {
+            continue
+        } else {
+            mapBestScores[nextState] = nextState.steps
+        }
+        if (finishedState(map, nextState.keys)) return nextState.steps
+        val nextMoves = shortestPathsToKeys(map, nextState)
+        nextStates.addAll(nextMoves.map { entry ->
+            val pos = entry.key
+            val (c, steps) = entry.value
+            CurrentState(pos, nextState.keys + c, nextState.steps + steps)
+        })
+        //println(nextStates)
     }
 }
 
-fun finishedState(map: List<String>, keys: Set<Char>): Boolean {
-    return map.joinToString("").none { c -> c.isLowerCase() && !keys.contains(c) }
+fun part2(input: List<String>): Int {
+    val initPos = findInitPos(input)
+    val toRemove = initPos.neighbors() + initPos
+    val mapWithoutPos = input.map { line -> line.replace("@", ".") }
+
+    val map = mutableMapOf<Pos, Char>()
+    for (row in mapWithoutPos.indices) {
+        for (col in mapWithoutPos[row].indices) {
+            val value = mapWithoutPos[row][col]
+            if (value != '#' && !toRemove.contains(Pos(col, row))) {
+                map[Pos(col, row)] = value
+            }
+        }
+    }
+
+    val initPositions = listOf(Pos(-1, -1), Pos(-1, 1), Pos(1, -1), Pos(1, 1)).map { initPos + it }
+    val initState = QuadriState(initPositions, setOf(), 0)
+    val nextStates = PriorityQueue<QuadriState>(compareBy { it.steps })
+    nextStates.add(initState)
+    val mapBestScores = mutableMapOf<QuadriState, Int>()
+    while (true) {
+        val nextState = nextStates.poll()
+        if (mapBestScores.containsKey(nextState) && mapBestScores.getValue(nextState) <= nextState.steps) {
+            continue
+        } else {
+            mapBestScores[nextState] = nextState.steps
+        }
+        if (finishedState(map, nextState.keys)) return nextState.steps
+
+        val nextMoves: Map<List<Pos>, Pair<Char, Int>> = (0..3).map { i ->
+            shortestPathsToKeys(
+                map,
+                CurrentState(nextState.positions[i], nextState.keys, nextState.steps)
+            ).map { entry ->
+                val positions = ArrayList(nextState.positions)
+                positions[i] = entry.key
+                positions to entry.value
+            }
+        }.fold(mapOf()) { m1, m2 -> m1.plus(m2) }
+
+        nextStates.addAll(nextMoves.map { entry ->
+            val positions = entry.key
+            val (c, steps) = entry.value
+            QuadriState(positions, nextState.keys + c, nextState.steps + steps)
+        })
+        //println(nextStates)
+    }
 }
 
-data class CurrentState(val currentPos: Pos, val visitedPos: List<Pos>, val keys: Set<Char>, val steps: Int)
+private operator fun Pos.plus(other: Pos): Pos = Pos(first + other.first, second + other.second)
 
-fun nextMoves(map: List<String>, currentState: CurrentState): List<CurrentState> =
-        currentState.currentPos.neighbors()
-                .filter(validPosition(map, currentState))
-                .filter { pos -> !currentState.visitedPos.contains(pos) }
-                .map { pos ->
-                    val current = map[pos.second][pos.first]
-                    // Reset visited if new door or new key only
-                    val newVisited = (if (currentState.keys.contains(current))
-                        currentState.visitedPos
-                    else
-                        listOf()) + pos
-                    CurrentState(pos, newVisited, currentState.keys + current, currentState.steps + 1)
-                }
+fun finishedState(map: Map<Pos, Char>, keys: Set<Char>): Boolean {
+    return map.values.none { c -> c.isLowerCase() && !keys.contains(c) }
+}
 
-private fun validPosition(map: List<String>, currentState: CurrentState): (Pos) -> Boolean {
+data class CurrentState(val currentPos: Pos, val keys: Set<Char>, val steps: Int) {
+    override fun equals(other: Any?): Boolean =
+        other is CurrentState && currentPos == other.currentPos && keys.size == other.keys.size && keys.all {
+            other.keys.contains(
+                it
+            )
+        }
+
+    override fun hashCode(): Int {
+        var result = currentPos.hashCode()
+        result = 31 * result + keys.hashCode()
+        return result
+    }
+}
+
+data class QuadriState(val positions: List<Pos>, val keys: Set<Char>, val steps: Int) {
+    override fun equals(other: Any?): Boolean =
+        other is QuadriState && positions == other.positions && keys.size == other.keys.size && keys.all {
+            other.keys.contains(
+                it
+            )
+        }
+
+    override fun hashCode(): Int {
+        var result = positions.hashCode()
+        result = 31 * result + keys.hashCode()
+        return result
+    }
+}
+
+fun shortestPathsToKeys(map: Map<Pos, Char>, currentState: CurrentState): MutableMap<Pos, Pair<Char, Int>> {
+    val visited = mutableSetOf<Pos>()
+    val toVisit = mutableListOf(currentState.currentPos to 0)
+    val mapShortestPaths = mutableMapOf<Pos, Pair<Char, Int>>()
+    while (toVisit.size > 0) {
+        val (pos, steps) = toVisit.removeAt(0)
+        if (visited.contains(pos)) continue
+        visited.add(pos)
+        val value = map.getValue(pos)
+        if (value.isLowerCase() && !currentState.keys.contains(value)) {
+            mapShortestPaths[pos] = value to steps
+        }
+        toVisit.addAll(pos.neighbors().filter(validPosition(map, currentState)).map { it to steps + 1 })
+    }
+    //println("$currentState $mapShortestPaths")
+    return mapShortestPaths
+}
+
+private fun validPosition(map: Map<Pos, Char>, currentState: CurrentState): (Pos) -> Boolean {
     return { (x, y) ->
-        val value = map[y][x]
-        value != '#' && !(value.isUpperCase() && !currentState.keys.contains(value.toLowerCase()))
+        map.containsKey(Pos(x, y)) && !(map.getValue(Pos(x, y))
+            .isUpperCase() && !currentState.keys.contains(map.getValue(Pos(x, y)).toLowerCase()))
     }
 }
 
-private fun Pos.neighbors(): List<Pos> {
+fun Pos.neighbors(): List<Pos> {
     return listOf(
-            Pos(this.first - 1, this.second),
-            Pos(this.first + 1, this.second),
-            Pos(this.first, this.second + 1),
-            Pos(this.first, this.second - 1)
+        Pos(this.first - 1, this.second),
+        Pos(this.first + 1, this.second),
+        Pos(this.first, this.second + 1),
+        Pos(this.first, this.second - 1)
     )
 }
 
